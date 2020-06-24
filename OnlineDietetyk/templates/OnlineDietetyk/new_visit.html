@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Visit</title>
+</head>
+<body>
+<div>
+    <header>Wyszukaj pacjenta</header>
+    <form method="get" class="form-inline">
+
+        Nazwisko: <input type="text" name="surname"/><br/>
+        Imie: <input type="text" name="name"/><br/>
+        <input type="reset" value="Wyczysc"/>
+        <input type="submit" name="search" value="Szukaj pacjenta"/>
+</form>
+    <div>
+        <p>Wyniki:</p>
+        <table class="table">
+            <thead class="thead-dark">
+                <th scope="col">Nazwisko</th>
+                <th scope="col">Imie</th>
+            </thead>
+            <tbody>
+                {% for i in result %}
+                <tr>
+                    <td>{{i.imie}}</td>
+                    <td>{{i.nazwisko}}</td>
+                </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

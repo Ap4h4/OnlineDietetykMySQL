@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diets</title>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/script1.js' %}"></script>
+</head>
+<body>
+    <div id="header">{% include "./header.html" %}</div>
+    <div id="main">
+        <div class="searchForm">
+            <form method="get" class="form-inline">
+                <div class="form-group col-sm-12"><label class="control-label col-sm-4">Nazwa:</label>
+                <input type="text" name="nazwa" class="form-control col-sm-6"/></div>
+                <div class="form-group col-sm-12"><label class="control-label col-sm-4">Kategoria:</label>
+                    <select name="typ" class="form-control col-sm-6">
+                        <option value = "">Wybierz kategorie</option>
+                        {% for i in types %}
+                        <option value = {{ i.id }}> {{ i.typ }} </option>
+                        {% endfor %}
+                    </select></div>
+        <input type="reset" value="Wyczysc" class="btn btn-primary col-sm-6"/>
+        <input type="submit" name="search" value="Szukaj diety" class="btn btn-primary col-sm-6"/>
+            </form>
+        </div>
+
+<div class="searchResults">
+    <table class="table">
+    <thead class="thead-dark">
+    <th scope="col">Nazwa diety</th>
+    <th scope="col">Wersja</th>
+    <th scope="col">Data dodania</th>
+    <th scope="col">Kategoria</th>
+    <th scope="col">Kcal</th>
+    <th scope="col">Białko [g]</th>
+    <th scope="col">Tłuszcze [g]</th>
+    <th scope="col">Węglowodany [g]</th>
+    </thead>
+    <tbody>
+
+    {% for i in ds %}
+    <tr>
+
+        <td><a href="/OnlineDietetyk/diet/{{ i.0 }}/">{{ i.1 }}</a> </td>
+        <td>{{ i.2 }}</td>
+        <td>{{ i.3 }}</td>
+        <td>{{ i.4 }}</td>
+        <td>{% if i.3 %}
+                {{ i.3 }}
+            {% else %}
+                -
+            {% endif %}
+        </td>
+        <td>{% if i.4 %}
+                {{ i.4 }}
+            {% else %}
+                -
+            {% endif %}</td>
+        <td>{% if i.5 %}
+                {{ i.5 }}
+            {% else %}
+                -
+            {% endif %}</td>
+        <td>{% if i.6 %}
+                {{ i.6 }}
+            {% else %}
+                -
+            {% endif %}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>
+    </div>
+</body>
+</html>

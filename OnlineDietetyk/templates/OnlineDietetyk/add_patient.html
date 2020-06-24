@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/script1.js' %}"></script>
+</head>
+<body>
+<div id="header">{% include "./header.html" %}</div>
+<div id="main">
+    <div class="form-inline">
+        <h1>Dodaj nowego pacjenta </h1>
+        <form action="" method="POST" class="form-inline new-form">
+        {% csrf_token %}
+            <label class="control-label col-sm-6">Nazwisko:</label>
+            <input class="form-control col-sm-6" type="text" name="surname"/><br/>
+            <label class="control-label col-sm-6">Imie:</label>
+            <input class="form-control col-sm-6" type="text" name="name"/><br/>
+            <label class="control-label col-sm-6">Email:</label>
+            <input class="form-control col-sm-6" type="text" name="mail"/><br/>
+            <label class="control-label col-sm-6">Nr telefonu:</label>
+            <input class="form-control col-sm-6" type="text" name="phone"/><br/>
+            <label class="control-label col-sm-6">Date urodzenia:</label>
+            <input class="form-control col-sm-6" type="date" name="DOB"/><br/>
+            <input class="btn btn-primary col-sm-6 addNew" type="submit" value="Dodaj pacjenta"/>
+            <input class="btn btn-primary col-sm-6 resetNew" type="reset" value="Wyczysc"/>
+        </form>
+    </div>
+</div>
+</body>
+</html>

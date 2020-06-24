@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diets</title>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/script1.js' %}"></script>
+</head>
+<body>
+  <div id="header">{% include "./header.html" %}</div>
+  <div id="main">
+      <div class="container diet">
+        <div class="dietName col-md-4">
+            <h3>Nazwa diety: {{ dm.0.0 }}</h3>
+            <div class="dietInfo">
+                <span>Kategoria: {{ dm.0.1 }} </span><br />
+                <span>Data dodania: {{ dm.0.2 }} </span><br />
+                <span>Wersja: {{ dm.0.3 }} </span><br />
+            </div>
+        </div>
+        <div class="dietMeals col-md-4">
+            <h3>Dania</h3>
+            <table class="active_meals table table-bordered">
+            <thead>
+            <th>Dzień</th>
+            <th>Pora dnia</th>
+            <th>Danie</th>
+            <th>Porcje</th>
+            <th><span class="glyphicon glyphicon-trash"></span></th>
+            </thead>
+            <tbody>
+            {% for i in dm %}
+                <tr>
+                    <td>
+                        {{ i.4 }}
+                    </td>
+                    <td>{{ i.5 }}</td>
+                    <td>{{ i.7 }}</td>
+                    <td>{{ i.8 }}</td>
+                    <td>
+                        <button  class="btn btn-warning glyphicon glyphicon-remove deleteCrossDiet"></button>
+                        <form class="hidden" action="" method="POST">
+                            {% csrf_token %}
+                            <input type="number" name="" class="tmpID" value="{{ i.6 }}" style="display: none;"/>
+                            <input  class="removeMeal btn btn-primary remove" type="submit" name="remove" value="Usuń danie">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+            </table>
+        </div>
+        <div class="dietStats col-md-4">
+            <h3>Statystyki diety</h3>
+            <table class="active_meals table table-bordered">
+            <thead>
+            <th>Kcal</th>
+            <th>Białko</th>
+            <th>Tłuszcze</th>
+            <th>Węglowodany</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ ds.0.1 }}</td>
+                    <td>{{ ds.0.2 }}</td>
+                    <td>{{ ds.0.3 }}</td>
+                    <td>{{ ds.0.4 }}</td>
+                </tr>
+
+            </tbody>
+            </table>
+        </div>
+
+    </div>
+    <div class="schedule">
+        <button id="searchMeal">Dodaj posilek</button>
+        <button id="recalc">Przelicz dietę</button>
+        <table class="table table-bordered tmpSum">
+            <thead>
+                <th>kCal</th>
+                <th>Białko</th>
+                <th>Tłuszcze</th>
+                <th>Węglowodany</th>
+            </thead>
+            <tbody>
+                <td class="tmpSumKcal"></td>
+                <td class="tmpSumProt"></td>
+                <td class="tmpSumFat"></td>
+                <td class="tmpSumCarbo"></td>
+            </tbody>
+        </table>
+        <form action="" method="POST">
+        <table class="table table-bordered">
+            <thead>
+                <th>Dzień</th>
+                <th>Pora posiłku</th>
+                <th>Posiłek</th>
+                <th>Gram na porcję</th>
+                <th>Liczba porcji</th>
+                <th>kCal</th>
+                <th>Białko</th>
+                <th>Tłuszcze</th>
+                <th>Węglowodany</th>
+                <th>Przelicz sklad</th>
+            </thead>
+
+                {% csrf_token %}
+                <tbody id="list_of_meals">
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><input id="saveMeals" type="submit" name = "add" value="Dodaj wybrane powyzej dania do diety"/></td>
+                    </tr>
+                </tfoot>
+
+
+        </table>
+        </form>
+    </div>
+  </div>
+</body>
+</html>

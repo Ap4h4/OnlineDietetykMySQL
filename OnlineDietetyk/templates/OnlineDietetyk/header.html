@@ -1,0 +1,49 @@
+<header>
+    <nav class="navbar navbar-default">
+    <div class="container-fluid">
+
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/OnlineDietetyk">Online Dietetyk 2.0</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pacjenci<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+              <li><a href="/OnlineDietetyk/patients">Zarządzaj pacjentami</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="/OnlineDietetyk/add_patient">Dodaj pacjenta</a></li>
+              <li><a href="/OnlineDietetyk/search_patient">Szukaj pacjentów</a></li>
+              <li><a href="/OnlineDietetyk/visits">Wizyty</a></li>
+          </ul>
+        </li>
+          <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Diety i dania<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+              <li><a href="/OnlineDietetyk/diets">Zarządzaj dietami</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="/OnlineDietetyk/diets_all">Przeglądaj diety</a></li>
+              <li><a href="/OnlineDietetyk/new_diet">Nowa dieta</a></li>
+              <li><a href="/OnlineDietetyk/meals">Przeglądaj dania</a></li>
+              <li><a href="/OnlineDietetyk/new_meal">Nowa danie</a></li>
+          </ul>
+        </li>
+          <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Baza produktów<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+              <li><a href="/OnlineDietetyk/products">Zarządzaj produktami</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="/OnlineDietetyk/search_product">Wyszukiwarka produktów</a></li>
+              <li><a href="/OnlineDietetyk/new_product/">Nowy produkt</a></li>
+          </ul>
+        </li>
+      </ul>
+        <div class="userPanel nav navbar-nav">
+            <span>Użytkownik: {{ user.username }}</span>
+            <a class="text-white logout" href="/OnlineDietetyk/logout">Wyloguj</a>
+        </div>
+    </div>
+    </div>
+    </nav>
+    </header>

@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/script1.js' %}"></script>
+    <script>
+        $('.dropdown-toggle').dropdown()
+    </script>
+</head>
+<body>
+<div id="header">{% include "./header.html" %}</div>
+<div id="main">
+    <div class="searchForm">
+         <form method="get" class="form-inline">
+             <div class="form-group col-sm-12"><label class="control-label col-sm-4">Nazwisko:</label>
+             <input type="text" name="surname" class="form-control col-sm-6"/></div>
+             <div class="form-group col-sm-12"><label class="control-label col-sm-4">Imie:</label>
+             <input type="text" name="name" class="form-control col-sm-6"/></div>
+             <div class="form-group col-sm-12"><label class="control-label col-sm-4">Date urodzenia:</label>
+             <input type="date" name="DOB" class="form-control col-sm-6"/></div>
+             <div class="form-group col-sm-12"><label class="control-label col-sm-4">Email:</label>
+             <input type="text" class="form-control col-sm-6" name="mail" id="inputEmail4"/></div>
+             <div class="form-group col-sm-12"><label class="control-label col-sm-4">Nr telefonu:</label>
+             <input type="text" name="phone" class="form-control col-sm-6"/></div>
+            <input type="reset" class="btn btn-primary col-sm-6" value="Wyczysc"/>
+            <input type="submit" class="btn btn-primary col-sm-6" name="search" value="Szukaj pacjenta"/>
+        </form>
+    </div>
+<div class="searchResults">
+    <table class="table">
+    <thead class="thead-dark">
+    <th scope="col">Nazwisko</th>
+    <th scope="col">Imie</th>
+    <th scope="col">Adres email</th>
+    <th scope="col">Numer tel</th>
+    <th scope="col">Data urodzenia</th>
+    <th scope="col">Profil pacjenta</th>
+    </thead>
+    <tbody>
+
+    {% for i in result %}
+    <tr>
+
+        <td>{{i.imie}}</td>
+        <td>{{i.nazwisko}}</td>
+        <td>{{i.email}}</td>
+        <td>{{i.telefon}}</td>
+        <td>{{i.data_ur}}</td>
+        <td><a class="glyphicon glyphicon-user" href="/OnlineDietetyk/patient/{{i.id_pacjenta}}"></a></td>
+    </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+</div>
+</body>
+</html>

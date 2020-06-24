@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Searching products for meal</title>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="{% static 'js/script1.js' %}"></script>
+</head>
+<body>
+<div>
+    <form method="get" class="form-inline">
+
+        Nazwa: <input type="text" name="nazwa"/><br/>
+        Kategoria:<select name="kat">
+            <option value = "">Wybierz kategorie</option>
+            {% for i in categories %}
+                <option value = {{ i.id }}> {{ i.nazwa }} </option>
+            {% endfor %}
+        </select><br/>
+        <input type="reset" value="Wyczysc"/>
+        <input type="submit" value="Szukaj produktu"/>
+
+    </form>
+</div>
+
+<div class="result">
+    <p>Wyniki:</p>
+    <table class="table">
+    <thead class="thead-dark">
+    <th scope="col">Nazwa dania</th>
+    <th scope="col">Kategoria</th>
+    <th scope="col">Kcal</th>
+    <th scope="col">Białko na 100g</th>
+    <th scope="col">Tłuszcze na 100g</th>
+    <th scope="col">Węglowodany na 100g</th>
+    </thead>
+    <tbody>
+
+    {% for i in result %}
+    <tr id="{{ i.0 }}">
+
+        <td><a class="meal add btn btn-primary" role="button" >{{ i.1 }}</a> </td>
+        <td>{{ i.2 }}</td>
+        <td class="amount">{{ i.3.4 }}</td>
+        <td class="kcal"> {{ i.3.1 }}</td>
+        <td class="protein"> {{ i.3.3 }}</td>
+        <td class="fat">{{ i.4.3 }}</td>
+        <td class="carbo"> {{ i.5.3 }}</td>
+    </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+
+
+</body>
+</html>

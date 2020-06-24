@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nowy produkt</title>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/script1.js' %}"></script>
+</head>
+<body>
+<div id="header">{% include "./header.html" %}</div>
+<div id="main">
+    <div class="newProductForm form-inline">
+      <h1>Dodaj nowy produkt do bazy danych </h1>
+        <form action="" method="POST" class="form-inline new-form">
+        {% csrf_token %}
+            <label class="control-label col-sm-6">Nazwa produktu:</label>
+            <input class="form-control col-sm-6" type="text" name="name"/><br/>
+            <label class="control-label col-sm-6">Kategoria:</label>
+            <select class="form-control col-sm-6" name="cat">
+                    <option value = "">Wybierz kategorie</option>
+                    {% for i in cat %}
+                        <option value = {{ i.id }}> {{ i.nazwa }} </option>
+                    {% endfor %}
+                </select><br/>
+            <label class="control-label col-sm-6">Kcal:</label>
+            <input class="form-control col-sm-6" type="number" name="kcal"><br />
+            <input id="add_product_button" class="btn btn-primary col-sm-6 addNew" type="submit" value="Dodaj produkt"/>
+            <input type="reset"  class="btn btn-primary col-sm-6 resetNew" value="Wyczysc"/>
+
+        </form>
+    </div>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wybor diety dla pacjenta</title>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+     <script src="{% static 'js/script1.js' %}"></script>
+</head>
+<body>
+<div>
+    <form method="get" class="form-inline">
+
+        Nazwa: <input type="text" name="nazwa"/><br/>
+        Kategoria:<select name="typ">
+            <option value = "">Wybierz kategorie</option>
+            {% for i in types %}
+                <option value = {{ i.id }}> {{ i.typ }} </option>
+            {% endfor %}
+        </select><br/>
+        <input type="reset" value="Wyczysc"/>
+        <input type="submit" value="Szukaj diety"/>
+
+    </form>
+</div>
+
+<div class="result">
+    <p>Wyniki:</p>
+    <table class="table">
+    <thead class="thead-dark">
+    <th scope="col">Nazwa diety</th>
+    <th scope="col">Kategoria</th>
+    <th scope="col">Kcal</th>
+    <th scope="col">Białko [g]</th>
+    <th scope="col">Tłuszcze [g]</th>
+    <th scope="col">Węglowodany [g]</th>
+    </thead>
+    <tbody>
+
+    {% for i in ds %}
+    <tr id="{{ i.0 }}">
+
+        <td><a class="diet add btn btn-primary" role="button" >{{ i.1 }}</a> </td>
+        <td>{{ i.2 }}</td>
+        <td>{% if i.3 %}
+                {{ i.3 }}
+            {% else %}
+                -
+            {% endif %}
+        </td>
+        <td>{% if i.4 %}
+                {{ i.4 }}
+            {% else %}
+                -
+            {% endif %}</td>
+        <td>{% if i.5 %}
+                {{ i.5 }}
+            {% else %}
+                -
+            {% endif %}</td>
+        <td>{% if i.6 %}
+                {{ i.6 }}
+            {% else %}
+                -
+            {% endif %}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>
+</body>
+</html>

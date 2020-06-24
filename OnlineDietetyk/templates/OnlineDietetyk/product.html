@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <script src="{% static 'js/script1.js' %}"></script>
+
+</head>
+<body>
+    <div id="header">{% include "./header.html" %}</div>
+    <div id="main">
+        <div class="container-fluid navigation-link" onclick="location.href='/OnlineDietetyk/products'">
+            <span class="glyphicon glyphicon-arrow-left"></span> Powrót do panelu produktów
+    </div>
+<form action="" method="POST">
+    {% csrf_token %}
+<div class="result">
+    <p>Dane produktu:</p>
+    <table class="table table-stripped">
+    <tbody>
+    <tr>
+        <th scope="row">Nazwa produktu</th>
+        <td>{{ result.0.0 }}</td>
+        <td class="edit hidden"> <input type="text" name="name" value="{{ result.0.0 }}"/></td>
+    </tr>
+    <tr>
+        <th scope="row">Kategoria:</th>
+        <td>{{ result.0.2 }}</td>
+        <td class="edit hidden">
+            <select name="cat">
+                <option value = "">Wybierz kategorie</option>
+                <option value="1">Nabial</option>
+                <option value="2">Owoce</option>
+                <option value="3">Warzywa</option>
+                <option value="4">Tluszcze i oleje</option>
+                <option value="5">Produkty zbozowe</option>
+                <option value="6">Wyroby piekarskie</option>
+                <option value="7">Mięso</option>
+                <option value="8">Ryby</option>
+                <option value="9">Jaja i produkty jajeczne</option>
+                <option value="10">Cukry i slodziki</option>
+                <option value="11">Przyprawy</option>
+                <option value="12">Napoje</option>
+                <option value="13">Wysoko przetworzone</option>
+                <option value="14">Inne</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">Kalorie [kcal/100g]:</th>
+        <td>{{ result.0.1 }}</td>
+        <td class="edit hidden"> <input type="number" name="kcal" step="0.01" value="{{ result.0.1 }}"/></td>
+    </tr>
+    <tr>
+        <th scope="row">Białko [g/100g]:</th>
+        <td>{{ result.0.4 }}</td>
+        <td class="edit hidden"> <input type="number" name="var1" step="0.01" value="{{ result.0.4 }}"/></td>
+    </tr>
+    <tr>
+        <th scope="row">Tłuszcze [g/100g]:</th>
+        <td>{{ result.1.4 }}</td>
+        <td class="edit hidden"> <input type="number" name="var2" step="0.01" value="{{ result.1.4 }}"/></td>
+    </tr>
+    <tr>
+        <th scope="row">Węglowodany [g/100g]:</th>
+        <td>{{ result.2.4 }}</td>
+        <td class="edit hidden"> <input type="number" name="var3" step="0.01" value="{{ result.2.4 }}"/></td>
+    </tr>
+    </tbody>
+    </table>
+
+
+</div>
+    <a id="edit_button" class="btn btn-primary"  role="button">Edytuj</a>
+    <input id = "saved_button" class = "edit btn btn-primary hidden" type="submit" value="Zapisz zmiany" name = "submit" onclick="/OnlineDietetyk/search_product.html">
+    <input class = "edit btn btn-primary hidden" type="reset" value="Zresetuj zmiany"/>
+    <a class="edit btn btn-primary hidden remove" href="#" role="button">Usun produkt z bazy danych</a>
+</form>
+    </div>
+</body>
+</html>

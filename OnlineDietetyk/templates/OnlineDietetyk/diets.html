@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diets</title>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/script1.js' %}"></script>
+</head>
+<body>
+  <div id="header">{% include "./header.html" %}</div>
+  <div id="main">
+    <div class="row row1">
+        <div class="module1 col-sm-12"><h2>Panel diet i dań</h2></div>
+    </div>
+    <div class="row row2">
+        <div class="module1 col-sm-3" onclick="location.href='/OnlineDietetyk/diets_all'"><span class="glyphicon glyphicon-tasks"></span><h3 class="header">Przeglądaj diety</h3></div>
+        <div class="module2 col-sm-3" onclick="location.href='/OnlineDietetyk/new_diet'"><span class="glyphicon glyphicon-scale"></span><h3 class="header">Stwórz nową dietę</h3></div>
+        <div class="module2 col-sm-3" onclick="location.href='/OnlineDietetyk/meals'"><span class="glyphicon glyphicon-cutlery"></span><h3 class="header">Przeglądaj dania</h3></div>
+        <div class="module2 col-sm-3" onclick="location.href='/OnlineDietetyk/new_meal'"><span class="glyphicon glyphicon-floppy-saved"></span><h3 class="header">Stwórz nowe danie</h3></div>
+    </div>
+    </div>
+
+</body>
+</html>

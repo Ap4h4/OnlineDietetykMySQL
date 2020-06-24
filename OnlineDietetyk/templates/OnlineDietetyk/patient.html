@@ -1,0 +1,251 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ekran pacjenta</title>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/script1.js' %}"></script>
+
+</head>
+<body>
+<div id="header">{% include "./header.html" %}</div>
+<div id="main">
+     <div class="data col-md-6">
+        <h3>Dane pacjenta</h3>
+        <table class="table table-stripped">
+            <tbody class="savedData">
+                <tr>
+                    <th scope="row">Nazwisko, imię:</th>
+                    <td> {{ data.0 }}, {{ data.1 }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Data urodzenia, wiek:</th>
+                    <td> {{ data.2}}, {{ data.3 }} </td>
+                </tr>
+                <tr>
+                    <th scope="row">Email:</th>
+                    <td> {{ data.4}} </td>
+                </tr>
+                <tr>
+                    <th scope="row">Telefon:</th>
+                    <td> {{ data.5}} </td>
+                </tr>
+            </tbody>
+            <tbody class="editData hidden">
+            <form action="" method="POST">
+                {% csrf_token %}
+                 <tr>
+                    <th scope="row">Nazwisko, imię:</th>
+                    <td> <input type="text" value="{{ data.0 }}" name="surname">, <input type="text" value="{{ data.1 }}" name="name"></td>
+                </tr>
+                <tr>
+                    <th scope="row">Data urodzenia:</th>
+                    <td>{{data.2}} <input type="date" value="{{data.2}}" name="dob"></td>
+                </tr>
+                <tr>
+                    <th scope="row">Email:</th>
+                    <td><input type="text" value="{{data.4}}" name="email"></td>
+                </tr>
+                <tr>
+                    <th scope="row">Telefon:</th>
+                    <td> <input type="text" value="{{data.5}}" name="phone"> </td>
+                </tr>
+                <tr>
+                    <td><input type="submit" name="saveData" value="Zapisz"></td>
+                    <td><input type="reset" value="Wyczysc"/></td>
+                </tr>
+            </form>
+            </tbody>
+            <tfoot>
+             <td><button id="editData" class="glyphicon glyphicon-pencil"></button></td>
+            </tfoot>
+        </table>
+
+    </div>
+    <div class="visits col-md-6">
+        <h3>Wizyty</h3>
+        <form action="" method="POST">
+        {% csrf_token %}
+        <table class="table">
+                <thead>
+                    <th scope="col">Wizyta</th>
+                    <th scope="col">Godzina</th>
+                    <th scope="col">Potwierdzona</th>
+                    <th scope="col">Odbyła się</th>
+                    <th scope="col">Edytuj</th>
+                </thead>
+
+                <tbody>
+                     {% for i in visits %}
+                    <tr class="visitItem">
+                        <td class="visitItem">{{ i.1 }}</td>
+                        <td class="visitItem">{{ i.2 }}</td>
+                        <td class="visitItem">{{ i.3 }}</td>
+                        <td class="visitItem">{{ i.4 }}</td>
+                        <td class="visitItem controlTD">
+                            <button type="button" class="updateVisit glyphicon glyphicon-pencil"></button><br />
+                            <button type="button" class="declineVisit glyphicon glyphicon-remove "></button></td>
+                        <td class="hidden formTD">
+                            <input type="number"  name="" value="{{i.0}}" class="idDeletedVisit hidden">
+                            <input type="submit" name="removeVisit" value="Uusń"><br />
+                            <button class="declineVisitBack glyphicon glyphicon-remove"></button>
+                        </td>
+                     <tr class="hidden visitItemEdit">
+                              <td class=""><input type="text" name="" value="{{ i.1 }}" class="lastDay hidden">
+                                  {{ i.1 }}<input type="date" name="" value="" class="newDate"></td>
+                              <td class=""><input type="text" name="" value="{{ i.2 }}" class="lastHour hidden">
+                                  {{ i.2 }}<input type="time" name="" class="newHour"></td>
+                              <td class="">{{i.3}}<br /><input type="checkbox" name="" class="newConfirmation"></td>
+                              <td class="">{{i.4}}<br /><input type="checkbox" name="" class="newFinished"></td>
+                              <td class="">
+                                  <input type="number" value="{{i.0}}"  class="idVisit hidden" name="">
+                                  <input type="submit" name="updateSelectedVisit" value="Aktualizuj"><br />
+                                  <button class="updateVisitBack glyphicon glyphicon-remove"></button></td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </form>
+        <form action="" method="POST">
+        {% csrf_token %}
+            <table class="table">
+                <tbody id="tableVisits">
+                </tbody>
+            </table>
+        </form>
+        <button id="newVisit" class="btn btn-outline-success glyphicon glyphicon-calendar">Nowa wizyta</button>
+    </div>
+    <div class="tests col-md-6">
+        <h3>Wyniki badań</h3>
+        <form action="" method="POST">
+        {% csrf_token %}
+        <table class="table">
+            <tbody>
+                <thead>
+                    <th scope="col">Data badania</th>
+                    <th scope="col">Waga</th>
+                    <th scope="col">Plytki krwi</th>
+                    <th scope="col">BMI</th>
+                    <th scope="col">Edytuj</th>
+                </thead>
+                {% for i in tests %}
+                <tr class="testItem">
+                    <td>{{ i.data_badania }}</td>
+                    <td>{{ i.waga }}</td>
+                    <td>{{ i.plytki_krwi }}</td>
+                    <td>{{ i.bmi }}</td>
+                    <td class="controlTD">
+                       <button type="button" class="updateTest glyphicon glyphicon-pencil"></button><br />
+                            <button type="button" class="declineTest glyphicon glyphicon-remove "></button>
+                    </td>
+                    <td class="hidden formTD">
+                            <input type="number"  name="" value="{{i.id}}" class="idDeletedTest hidden">
+                            <input type="submit" name="removeTest" value="Uusń"><br />
+                            <button class="declineVisitBack glyphicon glyphicon-remove"></button>
+                        </td>
+                </tr>
+                <tr class="hidden testItemEdit">
+                              <td class=""><input type="text" name="" value="{{ i.data_badania }}" class="lastDate hidden">
+                                  {{ i.data_badania }}<input type="date" name="" value="" class="newDate"></td>
+                              <td class="">
+                                  <input type="number" step = "0.01" name="" value="{{ i.waga }}" class="newTest1"></td>
+                              <td class="">
+                                  <input type="number" step = "0.01" name="" value="{{ i.plytki_krwi }}" class="newTest2"></td>
+                              <td class="">
+                                  <input type="number" step = "0.01" name="" value="{{ i.bmi }}" class="newTest3"></td>
+                              <td class="">
+                                  <input type="number" value="{{i.id}}"  class="idTest hidden" name="">
+                                  <input type="submit" name="updateSelectedTest" value="Aktualizuj"><br />
+                                  <button class="updateVisitBack glyphicon glyphicon-remove"></button></td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </form>
+        <form action="" method="POST">
+        {% csrf_token %}
+            <table class="table">
+                <tbody id="tableTests">
+                </tbody>
+            </table>
+        </form>
+        <button id="newTest" class="btn btn-outline-success glyphicon glyphicon-calendar">Nowe badanie</button>
+    </div>
+    <div class="diets col-md-6">
+        <h3>Diety pacjenta</h3>
+        <form action="" method="POST">
+        {% csrf_token %}
+            <table class="table">
+            <thead>
+            <th>Dieta</th>
+            <th>Typ</th>
+            <th>Data rozpoczęcia</th>
+            <th>Data zakończenia</th>
+            <th>Aktywna</th>
+            </thead>
+            <tbody>
+                {% for i in diets %}
+                    <tr class="dietItem">
+                        <td><a href="/OnlineDietetyk/diet/{{i.id_diety.id}}/">{{ i.id_diety.nazwa }}</a></td>
+                        <td>{{ i.id_diety.typ.typ }}</td>
+                        <td>{{ i.data_rozpoczecia }}</td>
+                        <td>{{ i.data_zakonczenia }}</td>
+                        <td>{% if i.aktywna %}
+                                tak
+                            {% else %}
+                                nie
+                            {% endif %}
+                        </td>
+                    <td class="controlTD">
+                       <button type="button" class="updateDiet glyphicon glyphicon-pencil"></button><br />
+                            <button type="button" class="deleteDiet glyphicon glyphicon-remove "></button>
+                    </td>
+                    <td class="hidden formTD">
+                            <input type="number"  name="" value="{{i.id}}" class="idDeletedDiet hidden">
+                            <input type="submit" name="removeDiet" value="Uusń"><br />
+                            <button class="removeDietBack glyphicon glyphicon-remove"></button>
+                        </td>
+                    </tr>
+                    <tr class="hidden testItemEdit">
+                              <td><a href="/OnlineDietetyk/diet/{{i.id}}/">{{ i.id_diety.nazwa }}</a></td>
+                              <td>{{ i.id_diety.typ.typ }}</td>
+                              <td class=""><input type="text" name="" value="{{ i.data_rozpoczecia }}" class="lastDate1 hidden">
+                                  {{ i.data_rozpoczecia }}<br /><input type="date" name="" value="" class="newDate1"></td>
+                              <td class=""><input type="text" name="" value="{{ i.data_zakonczenia }}" class="lastDate2 hidden">
+                                  {{ i.data_zakonczenia }}<br /><input type="date" name="" value="" class="newDate2"></td>
+                               <td class="">
+                                   {% if i.aktywna %}
+                                         tak
+                                    {% else %}
+                                        nie
+                                    {% endif %}<br />
+                                   <input type="checkbox" name="" class="newStatus">
+                               </td>
+                               <td>
+                                  <input type="number" value="{{i.id}}"  class="idDiet hidden" name="">
+                                  <input type="submit" name="updateSelectedDiet" value="Aktualizuj"><br />
+                                  <button class="updateDietBack glyphicon glyphicon-remove"></button></td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </form>
+        <form action="" method="POST">
+        {% csrf_token %}
+            <table class="table">
+                <tbody id="tableDiets">
+                </tbody>
+            </table>
+        </form>
+        <button id="newDiet" class="btn btn-outline-success glyphicon glyphicon-calendar">Dodaj diete</button>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function(){$(".product").click(function(){$(this).closest('tr').toggleClass("selected");});});
+        $(document).ready(function(){$(".product").click(function(){AddProductName(); });});
+        $(document).ready(function(){$('.product').click(function(){window.open('http://127.0.0.1:8000/OnlineDietetyk/meal_product.html','_blank', 'width=200,height=100');return false;});})
+        function AddProductName() {
+            var selectedProduct = $( ".selected .product" ).map(function() {return $( this ).text();}).get().join( ", " )
+            var sumKcal = $( ".selected .kcal" ).map(function() {return $( this ).text();}).get().join( ", " )
+            $("#list_of_products").html("Składniki: " + selectedProduct);
+
+        }
+    </script>
+</head>
+<body>
+    <header>
+    <nav class="navbar navbar-default">
+    <div class="container-fluid">
+
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/OnlineDietetyk">Online Dietetyk 2.0</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pacjenci<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+              <li><a href="/OnlineDietetyk/patients">Zarządzaj pacjentami</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="/OnlineDietetyk/add_patient">Dodaj pacjenta</a></li>
+              <li><a href="/OnlineDietetyk/search_patient">Szukaj pacjentów</a></li>
+          </ul>
+        </li>
+          <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Diety i dania<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+              <li><a href="/OnlineDietetyk/diets">Zarządzaj dietami</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="/OnlineDietetyk/diets_all">Przeglądaj diety</a></li>
+              <li><a href="/OnlineDietetyk/new_diet">Nowa dieta</a></li>
+              <li><a href="/OnlineDietetyk/meals">Przeglądaj dania</a></li>
+              <li><a href="/OnlineDietetyk/new_meal">Nowa danie</a></li>
+          </ul>
+        </li>
+          <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Baza produktów<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+              <li><a href="/OnlineDietetyk/products">Zarządzaj produktami</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="/OnlineDietetyk/search_product">Wyszukiwarka produktów</a></li>
+              <li><a href="/OnlineDietetyk/">Nowy produkt</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    </div>
+    </nav>
+    </header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            <li><a href="#">Przeglądaj diety</a></li>
+            <li><a href="/OnlineDietetyk/new_diet/">Stwórz nową dietę</a></li>
+            <li><a href="/OnlineDietetyk/meals/">Przeglądaj dania</a></li>
+            <li><a href="/OnlineDietetyk/new_meal/">Stwórz nowe danie</a></li>
+        </ul>
+        </div>
+    </nav>
+    <div class="meal">
+        <h3>Nazwa: {{ meal_describtion.0 }}</h3>
+        <h4>kategoria: {{ meal_describtion.1 }}</h4>
+        <div class="active_products">
+            <table>
+                <thead>
+                <th>Produkt</th>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br />
+    <div>
+        <h4>Dodaj produkty:</h4>
+    <form method="get" class="form-inline">
+
+        Nazwa: <input type="text" name="nazwa"/><br/>
+        Kategoria:<select name="kat">
+            <option value = "">Wybierz kategorie</option>
+            {% for i in categories %}
+                <option value = {{ i.id }}> {{ i.nazwa }} </option>
+            {% endfor %}
+        </select><br/>
+        <input type="reset" value="Wyczysc"/>
+        <input type="submit" value="Szukaj produktu"/>
+
+    </form>
+    </div>
+    <div class="tmpAddedProducts">
+        <form>
+            <input type="submit" value="Dodaj zaznacozne produkty"/>
+        </form>
+        <h4>Wybrane produkty:</h4>
+        <div id="list_of_products">
+
+        </div>
+    </div>
+    <div class="result">
+        <table class="table">
+            <thead class="thead-dark">
+            <th scope="col">Nazwa produktu</th>
+            <th scope="col">Kategoria</th>
+            <th scope="col">Kcal/100g</th>
+            <th scope="col">Białko</th>
+            <th scope="col">Tłuszcze</th>
+            <th scope="col">Węglowodany</th>
+            <th scope="col">Witaminy</th>
+            <th scope="col">Sole mineralne</th>
+            <th scope="col">Woda</th>
+            </thead>
+            <tbody>
+
+            {% for i in result %}
+            <tr>
+
+                <td><a class="product add btn btn-primary" role="button">{{ i.1 }}</a></td>
+                <td>{{ i.2 }}</td>
+                <td class="kcal">{{ i.3 }}</td>
+                <td>{% if i.4 %}
+                    {{ i.4 }}
+                    {% else %}
+                    -
+                    {% endif %}</td>
+                <td>{% if i.5 %}
+                    {{ i.5 }}
+                    {% else %}
+                    -
+                    {% endif %}</td>
+                <td>{% if i.6 %}
+                    {{ i.6 }}
+                    {% else %}
+                    -
+                    {% endif %}</td>
+                <td>{% if i.7 %}
+                    {{ i.7 }}
+                    {% else %}
+                    -
+                    {% endif %}</td>
+                <td>{% if i.8 %}
+                    {{ i.8 }}
+                    {% else %}
+                    -
+                    {% endif %}</td>
+                <td>{% if i.9 %}
+                    {{ i.9 }}
+                    {% else %}
+                    -
+                    {% endif %}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <p>Wyniki:</p>
+</div>
+
+</body>
+</html>

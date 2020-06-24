@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Raporty</title>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/script1.js' %}"></script>
+
+
+</head>
+<body>
+<div id="header">{% include "./header.html" %}</div>
+<div id="main">
+    <div class="patientsStats panel panel-default">
+        <div class="panel-heading">Pacjenci</div>
+        <div class="panel-body">
+            <ul class="list-group">
+                <li class="list-group-item">
+                <span class="badge">{{ patients.0.0 }}</span>
+                Liczba zarejestrowanych w systemie pacjentów
+                </li>
+                <li class="list-group-item">
+                <span class="badge">{{ patients.0.1 }}</span>
+                Średni wiek pacjentów
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="upcoimingVisits panel panel-default">
+        <div class="panel-heading">Nadchodzące wizyty</div>
+        <table class="table results">
+            <thead>
+                <th>Pacjent</th>
+                <th>Wiek pacjenta</th>
+                <th>Data wizyty</th>
+                <th>Liczba dni do wizyty</th>
+                <th>Poprzednia wizyta</th>
+                <th>Aktywna dieta</th>
+                <th>Data ostatniego badania</th>
+            </thead>
+            <tbody>
+            {%for i in visits %}
+            <tr>
+                <td>{{ i.0 }} {{i.1}}</td>
+                <td>{{ i.2 }}</td>
+                <td>{{ i.4 }} {{ i.3 }} {{ i.5 }}</td>
+                <td>{{ i.6 }}</td>
+                <td>{{ i.7 }}</td>
+                <td>{{ i.8 }}</td>
+                <td> {{i.10 }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="mealTop1 panel panel-default">
+        <div class="panel-heading">Dania z największą ilością kalorii</div>
+        <table class="table results">
+            <thead>
+            <th>Danie</th>
+            <th>Ilosc kcal</th>
+            </thead>
+            <tbody>
+            {% for i in top1 %}
+            <tr>
+                <td>{{ i.0 }}</td>
+                <td>{{ i.1 }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="mealTop2 panel panel-default">
+        <div class="panel-heading">Dania z największą ilością białka</div>
+        <table class="table results">
+            <thead>
+            <th>Danie</th>
+            <th>Ilosc bialka</th>
+            </thead>
+            <tbody>
+            {% for i in top1 %}
+            <tr>
+                <td>{{ i.0 }}</td>
+                <td>{{ i.1 }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+      <div class="mealTop3 panel panel-default">
+        <div class="panel-heading">Dania z największą ilością tłuszczy</div>
+        <table class="table results">
+            <thead>
+            <th>Danie</th>
+            <th>Ilosc tluszczy</th>
+            </thead>
+            <tbody>
+            {% for i in top1 %}
+            <tr>
+                <td>{{ i.0 }}</td>
+                <td>{{ i.1 }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="mealTop4 panel panel-default">
+        <div class="panel-heading">Dania z największą ilością węglowodanów</div>
+        <table class="table results">
+            <thead>
+            <th>Danie</th>
+            <th>Ilosc węglowodanów</th>
+            </thead>
+            <tbody>
+            {% for i in top1 %}
+            <tr>
+                <td>{{ i.0 }}</td>
+                <td>{{ i.1 }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

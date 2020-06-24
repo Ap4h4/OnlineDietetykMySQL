@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Baza danych OpenFood</title>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/script1.js' %}"></script>
+</head>
+<body>
+<div id="header">{% include "./header.html" %}</div>
+<div id="main">
+    <form method="get">
+    {% csrf_token %}
+    Slowo-klucz do wyszukania:<input type="text" name="keyword">
+    <input type="submit" name="searchAPI" value="Wyszukaj w bazie OpenFoood" class="btn btn-primary">
+</form>
+
+</body>
+<div class="searchResult">
+    <p>Wyniki:</p>
+    <form action="" method="POST" class="form-inline new-form">
+        {% csrf_token %}
+    <table class="table">
+    <thead class="thead-dark">
+    <th scope="col">Nazwa produktu</th>
+    <th scope="col">Kategoria</th>
+    <th scope="col">Kcal/100g</th>
+    <th scope="col">Białko</th>
+    <th scope="col">Tłuszcze</th>
+    <th scope="col">Węglowodany</th>
+    <th scope="col">Zapisz produkt</th>
+    </thead>
+    <tbody>
+
+    {% for i in results %}
+    <tr class="apiResult">
+        <td><a href="{{ i.url }}">{{ i.product_name }}</a> </td>
+        <td><select name="kat">
+            <option value = "">Wybierz kategorie</option>
+            {% for i in categories %}
+                <option value = {{ i.id }}> {{ i.nazwa }} </option>
+            {% endfor %}
+        </select></td>
+        <td>{{ i.nutriments.energy_100g }}</td>
+        <td>{{ i.nutriments.proteins_100g }}</td>
+        <td>{{ i.nutriments.fat_100g }}</td>
+        <td>{{ i.nutriments.carbohydrates_100g }}</td>
+        <td>
+            <a class="addProductAPI glyphicon glyphicon-check" role="button"></a>
+            <input type="submit" class="hidden btn btn-primary" name="addFromAPI" value="Dodaj"></td>
+    </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    </form>
+</div>
+</div>
+
+</html>

@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visits</title>
+    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/script1.js' %}"></script>
+</head>
+<body>
+<div id="header">{% include "./header.html" %}</div>
+<div id="main">
+    <form method="get" class="form-inline">
+
+        Nazwisko: <input type="text" name="surname"/><br/>
+        Imie: <input type="text" name="name"/><br/>
+        Dzień wizyty: <input type="date" name="date"/><br/>
+        Potwierdzona: <input id="conf1" type="radio" name="confirmed" value="1"><label for="conf1">Tak</label>&nbsp;
+                      <input id="conf0" type="radio" name="confirmed" value="0"><label for="conf0">Nie</label><br>
+        Zakończona: <input id="end1" type="radio" name="finished" value="1"><label for="conf1">Tak</label>&nbsp;
+                      <input id="end0" type="radio" name="finished" value="0"><label for="conf0">Nie</label><br>
+        <input type="reset" value="Wyczysc"/>
+        <input type="submit" name="search" value="Szukaj wizyty"/>
+</form>
+<div>
+    <p>Wyniki:</p>
+    <table class="table">
+    <thead class="thead-dark">
+    <th scope="col">Nazwisko</th>
+    <th scope="col">Imie</th>
+    <th scope="col">Data wizyty</th>
+    <th scope="col">Czy potwierdzona?</th>
+    <th scope="col">Czy się odbyła?</th>
+    <th scope="col">Panel pacjenta</th>
+    <th scope="col">Odwołanie wizyty</th>
+    </thead>
+    <tbody>
+
+    {% for i in result %}
+    <tr>
+
+        <td>{{i.id_pacjenta.nazwisko}}</td>
+        <td>{{i.id_pacjenta.imie}}</td>
+        <td>{{i.data}}</td>
+        <td>{% if i.potwierdzona %}
+                tak
+            {% else %}
+                nie
+            {% endif %}
+        </td>
+        <td>{% if i.zakonczona %}
+                tak
+            {% else %}
+                nie
+            {% endif %}
+        </td>
+        <td><a class="glyphicon glyphicon-user" href="/OnlineDietetyk/patient/{{i.id_pacjenta.id_pacjenta}}"></a></td>
+        <td><button  class="btn btn-warning glyphicon glyphicon-remove deleteCross"></button>
+                        <form class="hidden" action="" method="POST">
+                            {% csrf_token %}
+                            <input type="number" name="" class="tmpID" value="{{ i.id }}" style="display: none;"/>
+                            <input  class="declineVisit" type="submit" name="decline" value="Usuń wizytę">
+                        </form></td>
+    </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+</div>
+</body>
+</html>

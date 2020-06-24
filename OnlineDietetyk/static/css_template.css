@@ -1,0 +1,121 @@
+html, body, div#main{
+  height: 100%;
+}
+div#main {
+    background-color: #C7D8C6;
+}
+/*** Login page ***/
+#loginPageBody{
+  height: 100%;
+}
+#loginPage, #loginPageBody{
+	background-color:#efefef;}
+
+div.container.form-inline.loginbox {
+    width: 33%;
+    background-color: #C7D8C6;
+	padding: 20px;
+	margin-top: 5%;
+	border-line: black solid 1px;
+}
+.form-group.col-sm-12 {
+	text-align: left;
+	margin-bottom: 5px !important;}
+.form-group.col-sm-12 input {
+	float: right;
+	width: 60%;}
+.form-group.col-sm-12 .btn.btn-primary.col-sm-6 {
+width: 30%;}
+/***welcome message***/
+.row1 .module1 {text-align: center;}
+
+/*** header ***/
+#header .userPanel {float: right;}
+#header .userPanel > a {
+    color: #777;
+    display: block;}
+#header .userPanel .logout {text-align: right;}
+.navbar.navbar-default {margin-bottom: 0;}
+/***modules***/
+.row2 {height: 10em;
+margin-top: 5em;}
+.row2 > div, .row3 > div{text-align: center; cursor: pointer;}
+
+.row .glyphicon {
+    display: block;
+    font-size: 5em;
+}
+.row1 .module, .row2 .module {background-color: #AFA842;}
+
+.product.add.btn.btn-primary.selected
+{background-color: green;}
+
+
+/***meal site ***/
+/*search product*/
+.navigation-link {cursor: pointer;}
+/***search froms***/
+div.searchForm {width: 33%; display:block; height: 13em;}
+div.searchForm .form-inline {height: 100%;}
+/*** glyph icons ***/
+span.glyphicon {
+	color: #6c648b;
+}
+span.glyphicon:hover{
+	color:#4ABDAC;}
+/*** buttons ***/
+.btn.btn-primary, .btn.btn-outline-success{
+    background-color: #588c7e;
+    color: #fff;}
+
+.btn.btn-primary:hover, .btn.btn-outline-success:hover
+    {background-color: #96ceb4;
+    color: #fff;}
+.btn.btn-primary:active
+    {background-color: #5b9aa0;
+    color: #fff;}
+
+.btn.btn-primary.activeEdit {
+    background-color: #ffcc5c;
+}
+.btn.btn-primary.activeEdit:hover{
+    background-color: #ffeead;
+}
+
+.btn.btn-primary.remove {
+    background-color: #c83349;
+}
+.btn.btn-primary.remove:hover{
+    background-color: #e06377;
+}
+/*** forms ***/
+div.form-inline {
+    display: block;
+    width: 40%;
+    margin: 0 auto;
+}
+div.main{
+text-align: center;}
+
+.new-form .btn.btn-primary {
+    margin-top: 5%;
+    width: 35%;
+    display: block;
+}
+.btn.btn-primary.col-sm-6.resetNew {
+    float: right;
+}
+/*** meal page ***/
+.tmpMeal.container #searchProduct {
+    float: right;}
+ .tmpMeal.container .newControl {
+    padding-bottom: 5em;}
+
+/*** patient panel ***/
+#tableVisits td:first-child {width: 180px;}
+#tableVisits td:nth-child(2) {width: 100px;}
+#tableVisits td:nth-child(3), #tableVisits td:nth-child(4) {width: 180px; text-align: center;}
+#tableVisits td:nth-child(5) {float: right; margin-right: 3em;}
+	
+/*** API ***/
+.apiResult.selected {background-color: snow;}
