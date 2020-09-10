@@ -80,7 +80,14 @@
     <a id="edit_button" class="btn btn-primary"  role="button">Edytuj</a>
     <input id = "saved_button" class = "edit btn btn-primary hidden" type="submit" value="Zapisz zmiany" name = "submit" onclick="/OnlineDietetyk/search_product.html">
     <input class = "edit btn btn-primary hidden" type="reset" value="Zresetuj zmiany"/>
-    <a class="edit btn btn-primary hidden remove" href="#" role="button">Usun produkt z bazy danych</a>
+    <input id = "deleteProduct" class = "edit btn btn-primary hidden remove" type="submit" value="Usun produkt z bazy danych" name = "deleteProduct">
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
 </form>
     </div>
 </body>

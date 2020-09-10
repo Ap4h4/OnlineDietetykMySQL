@@ -4,6 +4,7 @@ from django.db import connection
 from django.views import View
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Q
+from django.contrib import messages
 #authentication
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
@@ -22,6 +23,9 @@ from OnlineDietetyk.models import DanieProdukt, TypDiety, Diety, DietaDanie, Por
 import json
 import requests
 
+#MIGRATION FROM MS SQL TO MySQL notes
+"""To retrieve data from MySQL cursor returns needs to be mapped directly, so any assigning to the variable 'q'
+was commented for only MS SQL usage"""
 
 #login process
 """class DashboardView(LoginRequiredMixin, TemplateView):
@@ -326,8 +330,9 @@ def search_product(request):
         return render(request, 'OnlineDietetyk/search_product.html', context)
     elif request.GET.get('search'):
         c = connection.cursor()
-        q = c.execute("select * from v_produkty_top10_alf")
-        result = q.fetchall()
+        #q = c.execute("select * from v_produkty_top10_alf")
+        c.execute("select * from v_produkty_top10_alf")
+        result = c.fetchall()
         context = {'result': result, 'categories': categories}
         return render(request, 'OnlineDietetyk/search_product.html', context)
     else:
@@ -360,6 +365,15 @@ def product_details(request, id):
                 var3=0
             q3 = c.execute("exec p_edytuj_prod %s,%s,%s,%s,%s,%s,%s", [id, name, cat, kcal, var1, var2, var3])
             return redirect('product_details', id=id)
+        if (request.POST.get('deleteProduct')):
+            q = c.execute("select * from Danie_produkt where Id_produktu = %s", [id])
+            r = q.fetchall()
+            if len(r) > 0:
+                messages.error(request, "Produkt użyty w daniu!")
+            else:
+                ProduktSkladnik.objects.filter(id_prod=id).delete()
+                ProduktyZywn.objects.filter(id=id).delete()
+                return redirect('search_product')
     return render(request, 'OnlineDietetyk/product.html', context)
 
 @login_required

@@ -76,7 +76,8 @@ WSGI_APPLICATION = 'dietetyka.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-#Laczenie sie z lokalnym serwerem
+#Laczenie sie z lokalnym serwerem MS SQL
+"""
 DATABASES = {
     'default': {
        'ENGINE': 'sql_server.pyodbc',
@@ -87,6 +88,19 @@ DATABASES = {
 
    }
 }
+"""
+#Laczenie sie z lokalnym DB na MySQL
+DATABASES = {
+    'default': {
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': 'dietetyka',
+       'USER': 'dietetyk',
+       'PASSWORD': 'graotron',
+       'HOST': 'localhost',
+
+   }
+}
+
 #Laczenie sie z wirtualna maszyna
 """
 DATABASES = {
