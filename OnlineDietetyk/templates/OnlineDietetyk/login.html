@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link rel="stylesheet" href="{% static 'css_template.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css_template.css' %}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -31,8 +31,17 @@
             </div>
         </form>
     </div>
+     <div class="container form-inline loginbox2">
+        <div class="form-group col-sm-12">
+        <form method="post" class="form-inline">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-warning col-sm-12" name="demo" value="Wersja Demo - Read only">
+        </form>
+        </div>
+    </div>
 </div>
-
+<div id="footer">{% include "./footer.html" %}
+</div>
 
 </body>
 </html>

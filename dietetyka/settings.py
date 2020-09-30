@@ -26,7 +26,8 @@ SECRET_KEY = 'f^$-5sz5z2s)9t9(%0*y*&kl5(w#gbko4xejv5(w7_s1+y0=1r'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'paplosk.pythonanywhere.com',]
 
 #LOGIN_REDIRECT_URL = '/'
 # Application definition
@@ -76,44 +77,17 @@ WSGI_APPLICATION = 'dietetyka.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-#Laczenie sie z lokalnym serwerem MS SQL
-"""
-DATABASES = {
-    'default': {
-       'ENGINE': 'sql_server.pyodbc',
-       'NAME': 'dietetyka',
-       'USER': '',
-       'PASSWORD': '',
-       'HOST': 'LAPTOP-IAVEJ99H\SQLEXPRESS',
-
-   }
-}
-"""
-#Laczenie sie z lokalnym DB na MySQL
 DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.mysql',
-       'NAME': 'dietetyka',
-       'USER': 'dietetyk',
-       'PASSWORD': 'graotron',
-       'HOST': 'localhost',
+       'NAME': 'paplosk$dietetyka',
+       'USER': 'paplosk',
+       'PASSWORD': 'wykijdajlo1',
+       'HOST': 'paplosk.mysql.pythonanywhere-services.com',
 
    }
 }
 
-#Laczenie sie z wirtualna maszyna
-"""
-DATABASES = {
-    'default': {
-        'ENGINE': 'sql_server.pyodbc',
-        'NAME': 'dietetyka',
-        'USER': 'sa',
-        'PASSWORD': 'sa123',
-        'HOST': '127.0.0.1,7777',
-
-    }
-}
-"""
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
@@ -149,7 +123,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-
+STATIC_ROOT = '/home/paplosk/OnlineDietetyk/OnlineDietetyk/static/'
 STATIC_URL = '/static/'
 
 #login

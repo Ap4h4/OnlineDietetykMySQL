@@ -13,6 +13,13 @@
 <body>
     <div id="header">{% include "./header.html" %}</div>
     <div id="main">
+        {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
          <div class="container meal">
         <div class="mealNames col-md-4">
             <h3>Nazwa: {{ meal_prod.0.0 }}</h3>
@@ -121,5 +128,6 @@
         </div>
     </div>
     </div>
-
+<div id="footer">{% include "./footer.html" %}
+</div>
 </body>

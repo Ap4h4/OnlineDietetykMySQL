@@ -13,6 +13,13 @@
 <body>
 <div id="header">{% include "./header.html" %}</div>
 <div id="main">
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
     <div class="newProductForm form-inline">
       <h1>Dodaj nowy produkt do bazy danych </h1>
         <form action="" method="POST" class="form-inline new-form">
@@ -34,7 +41,8 @@
         </form>
     </div>
 </div>
-
+<div id="footer">{% include "./footer.html" %}
+</div>
 
 </body>
 </html>

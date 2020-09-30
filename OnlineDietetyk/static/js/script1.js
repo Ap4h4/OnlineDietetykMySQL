@@ -1,10 +1,10 @@
- //all htmls 
+ //all htmls
  $(document).ready(function(){
             $("#header").load("header.html");
         });
 
  //diet.html code
-$(document).ready(function(){$('#searchMeal').click(function(){window.open('http://127.0.0.1:8000/OnlineDietetyk/diet_meals','_blank', 'width=400,height=500');return false;});})
+$(document).ready(function(){$('#searchMeal').click(function(){window.open('/OnlineDietetyk/diet_meals','_blank', 'width=400,height=500');return false;});})
 $(document).ready(function(){$('#recalc').click(function(){RecalcTmpMeals(); });});
 function RemoveTmpRow(tmpB){
             var tmpP=tmpB.parentNode.parentNode;
@@ -68,7 +68,7 @@ function AddMealName() {
         }
 //meal.html code
 $(document).ready(function(){$('#searchProduct').click(function(){
-	window.open('http://127.0.0.1:8000/OnlineDietetyk/meal_products','_blank', 'width=400,height=500');return false;
+	window.open('/OnlineDietetyk/meal_products','_blank', 'width=400,height=500');return false;
 	});})
 
 $(document).ready(function(){$("#saveProducts").click(function(){
@@ -135,7 +135,7 @@ $(document).ready(function(){$("#add_product_button").click(function(){
             a1 = alert("Produkt zostala dodana. Zostaniesz teraz przekierowany do strony konfiguracji produktu.");
             if(a1)
                 {window.location.reload();}});});
- // Patient.html code 
+ // Patient.html code
  $(document).ready(function(){$("#editData").click(function(){
             $(".savedData").toggleClass("hidden");
             $(".editData").toggleClass("hidden");
@@ -206,7 +206,7 @@ $(document).ready(function(){$(".updateDiet").click(function(){
             $(this).closest("tr").next("tr").find('.lastDate2').attr('name','latestDate2');
             $(this).closest("tr").next("tr").find('.newStatus').attr('name','status');
                 });});
-$(document).ready(function(){$("#newDiet").click(function(){window.open('http://127.0.0.1:8000/OnlineDietetyk/patient_diets','_blank', 'width=400,height=500');return false;});})
+$(document).ready(function(){$("#newDiet").click(function(){window.open('/OnlineDietetyk/patient_diets','_blank', 'width=400,height=500');return false;});})
 
 //patient_diets.html code
 $(document).ready(function(){$(".diet").click(function(){$(this).closest('tr').toggleClass("selected");});});
@@ -242,7 +242,7 @@ $(document).ready(function(){$(".declineVisit").click(function(){
             if(a1)
                 {window.location.href = url;}});});
 
-			
+
 //openfoodapi.html code
     $(document).ready(function(){$(".addProductAPI").click(function(){
             $(this).closest('tr').toggleClass("selected");

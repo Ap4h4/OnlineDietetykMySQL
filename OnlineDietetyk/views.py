@@ -47,6 +47,17 @@ def login_view(request):
             return redirect('index')
         else:
             return redirect('patient_index')
+    elif not(form.is_valid()) and request.POST.get('demo'):
+        username = 'DemoUser'
+        password = 'Demo@123'
+        user = authenticate(username=username, password=password)
+        login(request, user)
+        if next:
+            return redirect(next)
+        if user.is_superuser:
+            return redirect('index')
+        else:
+            return redirect('patient_index')
     context = {
         'form': form,
     }
@@ -92,7 +103,7 @@ def products(request):
 #Pacjenci
 @login_required
 def add_patient(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_superuser:
         if request.POST.get('surname') and request.POST.get('name') and request.POST.get('mail') and request.POST.get('DOB'):
             post = Pacjenci()
             post.nazwisko = request.POST.get('surname')
@@ -102,6 +113,8 @@ def add_patient(request):
             post.data_ur = request.POST.get('DOB')
             post.save()
             return render(request, 'OnlineDietetyk/add_patient.html')
+    elif  request.method == 'POST' and not(request.user.is_superuser):
+        messages.error(request, "Demo version, changes has not been submitted.")
     else:
         return render(request, 'OnlineDietetyk/add_patient.html')
 
@@ -125,15 +138,19 @@ def search_patient(request):
 def patient(request, id):
     #uzycie kursora połączenia z bazą danych
     c = connection.cursor()
-    q = c.execute("exec p_pacjent_dane %s", [id])
-    data = q.fetchone()
-    q = c.execute("exec p_pacjent_wizyty %s", [id])
-    visits = q.fetchall()
+    c.callproc('p_pacjent_dane', [id, ])
+    c.execute("select * from tmpTable;")
+    data = c.fetchone()
+    c.execute("drop table tmpTable;")
+    c.callproc("p_pacjent_wizyty", [id])
+    c.execute("select * from tmpTable;")
+    visits = c.fetchall()
+    c.execute("drop table tmpTable;")
     #użycie składni ORM
     tests = WynikiBadan.objects.filter(id_pacjenta = id)
     diets = PacjentDieta.objects.filter(id_pacjenta = id)
     context = {'data': data, 'visits': visits, 'tests': tests, 'diets': diets}
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_superuser:
         # editing patient details
         if (request.POST.get('saveData')):
             newSurname = request.POST.get('surname')
@@ -144,7 +161,8 @@ def patient(request, id):
                 newDOB = data[2]
             newEmail = request.POST.get('email')
             newPhone = request.POST.get('phone')
-            c.execute('exec p_edytuj_pacjent %s,%s, %s, %s, %s, %s', [id, newName, newSurname, newPhone, newEmail, newDOB])
+            args = [id, newName, newSurname, newPhone, newEmail, newDOB]
+            c.callproc('p_edytuj_pacjent', args)
             return redirect('patient', id=id)
         # adding new visit
         if (request.POST.get('addVisit')):
@@ -161,7 +179,8 @@ def patient(request, id):
                 finished = 1
             else:
                 finished = 0
-            c.execute('exec p_dodaj_wizyte %s, %s, %s, %s', [id,date,conf,finished])
+            args = [id,date,conf,finished]
+            c.callproc('p_dodaj_wizyte', args)
             return redirect('patient', id=id)
         #updating visit
         if (request.POST.get('updateSelectedVisit')):
@@ -186,7 +205,8 @@ def patient(request, id):
                 finished = 1
             else:
                 finished = 0
-            c.execute('exec p_edytuj_wizyte %s, %s, %s, %s', [idVisit, date, conf, finished])
+            args =  [idVisit, date, conf, finished]
+            c.callproc('p_edytuj_wizyte', args)
             return redirect('patient', id=id)
         #removing vist
         if (request.POST.get('removeVisit')):
@@ -200,7 +220,8 @@ def patient(request, id):
             t1 = request.POST.get('test1')
             t2 = request.POST.get('test2')
             t3 = request.POST.get('test3')
-            c.execute('exec p_dodaj_badanie %s,%s,%s,%s,%s', [id,day,t1,t2,t3])
+            args = [id,day,t1,t2,t3]
+            c.callproc('p_dodaj_badanie', args)
             return redirect('patient', id=id)
         #removing test
         if (request.POST.get('removeTest')):
@@ -218,7 +239,8 @@ def patient(request, id):
             t1 = float(request.POST.get('test1'))
             t2 = float(request.POST.get('test2'))
             t3 = float(request.POST.get('test3'))
-            c.execute('exec p_edytuj_wynik_badania %s, %s, %s, %s, %s', [idTest, day, t1, t2, t3])
+            args = [idTest, day, t1, t2, t3]
+            c.callproc('p_edytuj_wynik_badania', args)
             return redirect('patient', id=id)
         #adding diet
         if (request.POST.get('addDiet')):
@@ -229,7 +251,8 @@ def patient(request, id):
                 status = 1
             else:
                 status = 0
-            c.execute('exec p_dodaj_diete_pacjent %s,%s,%s,%s,%s', [id, idDiet, date1, date2, status])
+            args = [id, idDiet, date1, date2, status]
+            c.callproc('p_dodaj_diete_pacjent', args)
             return redirect('patient', id=id)
         #removing diet
         if (request.POST.get('removeDiet')):
@@ -253,8 +276,12 @@ def patient(request, id):
                 status = 1
             else:
                 status = 0
-            c.execute('exec p_edytuj_diete_pacjenta %s, %s, %s, %s', [idDiet, day1, day2, status])
+            args = [idDiet, day1, day2, status]
+            c.callproc('call p_edytuj_diete_pacjenta', args)
             return redirect('patient', id=id)
+    elif request.method == 'POST' and not(request.user.is_superuser):
+        messages.error(request, "Demo version, changes has not been submitted.")
+        return redirect('patient', id=id)
     return render(request, 'OnlineDietetyk/patient.html', context)
 
 @login_required
@@ -263,16 +290,20 @@ def patient_diets(request):
     cat = {'types': type}
     if request.GET.get('nazwa') or request.GET.get('typ'):
         c = connection.cursor()
-        q = c.execute("exec p_szukaj_diety %s,%s", [request.GET.get('nazwa'), request.GET.get('typ')])
-        r1 = q.fetchall()
+        args = [request.GET.get('nazwa'), request.GET.get('typ')]
+        c.callproc("p_szukaj_diety", args)
+        c.execute("select * from tmpTable;")
+        r1 = c.fetchall()
+        c.execute("drop table tmpTable;")
         tmpList = []
         for i in r1:
             tmpL2 = []
             tmpL2.append(i[0])
             tmpL2.append(i[1])
             tmpL2.append(i[2])
-            q = c.execute("exec p_dieta_dane %s", [i[0]])
-            ds = q.fetchall()
+            args=[i[0]]
+            c.callproc("p_dieta_dane", args)
+            ds = c.fetchall()
             if (ds):
                 for j in ds[0]:
                     tmpL2.append(j)
@@ -322,9 +353,10 @@ def search_product(request):
             'skladnik') or request.GET.get('ile'):
 
         c = connection.cursor()
-       # q = c.execute("exec p_szukaj_produkt %s,%s,%s,%s", [request.GET.get('nazwa'), request.GET.get('kat'), request.GET.get('kcal'), request.GET.get('skladnik')])
-        q = c.execute("exec p_szukaj_produkt %s,%s", [request.GET.get('nazwa'), request.GET.get('kat')])
-        result = q.fetchall()
+       # q = c.execute("call p_szukaj_produkt %s,%s,%s,%s", [request.GET.get('nazwa'), request.GET.get('kat'), request.GET.get('kcal'), request.GET.get('skladnik')])
+        args = [request.GET.get('nazwa'), request.GET.get('kat')]
+        c.callproc("p_szukaj_produkt",args)
+        result = c.fetchall()
 
         context = {'result': result, 'categories' : categories}
         return render(request, 'OnlineDietetyk/search_product.html', context)
@@ -343,10 +375,12 @@ def product_details(request, id):
     categories = KategoriaProduktow.objects.all()
     kategorie = {'categories': categories}
     c = connection.cursor()
-    q2 = c.execute("exec p_produkt_dane %s", [id])
-    r2 = q2.fetchall()
+    c.callproc("p_produkt_dane", [id])
+    c.execute("select * from tmpTable;")
+    r2 = c.fetchall()
+    c.execute("drop table tmpTable;")
     context = {'result': r2}
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_superuser:
         if (request.POST.get('name') or request.POST.get('cat') or request.POST.get('kcal') or request.POST.get('var1')
                 or request.POST.get('var2') or request.POST.get('var3')) and request.POST.get('submit'):
             name = request.POST.get('name')
@@ -363,24 +397,27 @@ def product_details(request, id):
             var3 = request.POST.get('var3')
             if not var3:
                 var3=0
-            q3 = c.execute("exec p_edytuj_prod %s,%s,%s,%s,%s,%s,%s", [id, name, cat, kcal, var1, var2, var3])
+            args =  [id, name, cat, kcal, var1, var2, var3]
+            q3 = c.callproc("p_edytuj_prod", args)
             return redirect('product_details', id=id)
         if (request.POST.get('deleteProduct')):
-            q = c.execute("select * from Danie_produkt where Id_produktu = %s", [id])
-            r = q.fetchall()
+            c.execute("select * from Danie_produkt where Id_produktu = %s", [id])
+            r = c.fetchall()
             if len(r) > 0:
                 messages.error(request, "Produkt użyty w daniu!")
             else:
                 ProduktSkladnik.objects.filter(id_prod=id).delete()
                 ProduktyZywn.objects.filter(id=id).delete()
                 return redirect('search_product')
+    elif  request.method == 'POST' and not(request.user.is_superuser):
+        messages.error(request, "Demo version, changes has not been submitted.")
     return render(request, 'OnlineDietetyk/product.html', context)
 
 @login_required
 def new_product(request):
     type = KategoriaProduktow.objects.all()
     context = {'cat': type}
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_superuser:
         if (request.POST.get('name')):
             name = request.POST.get('name')
             category = request.POST.get('cat')
@@ -392,9 +429,12 @@ def new_product(request):
             NewProduct.kcal = kcal
             NewProduct.save()
             c = connection.cursor()
-            latest_added = c.execute("select top 1 id from Produkty_zywn order by id desc")
-            new_id = latest_added.fetchone()[0]
+            c.execute("select id from Produkty_zywn order by id desc limit 1")
+            new_id = c.fetchone()[0]
             return redirect('product_details', id=new_id)
+    elif  request.method == 'POST' and not(request.user.is_superuser):
+        messages.error(request, "Demo version, changes has not been submitted.")
+        return render (request, 'OnlineDietetyk/new_product.html', context)
     else:
         return render (request, 'OnlineDietetyk/new_product.html', context)
 #DIETY
@@ -408,8 +448,11 @@ def diets_all(request):
     cat = {'types': type}
     if request.GET.get('nazwa') or request.GET.get('typ'):
         c = connection.cursor()
-        q = c.execute("exec p_szukaj_diety %s,%s", [request.GET.get('nazwa'), request.GET.get('typ')])
-        r1 = q.fetchall()
+        args = [request.GET.get('nazwa'), request.GET.get('typ')]
+        c.callproc("p_szukaj_diety", args)
+        c.execute("select * from tmpTable")
+        r1 = c.fetchall()
+        c.execute("drop table tmpTable")
         tmpList = []
         for i in r1:
             tmpL2 = []
@@ -418,8 +461,10 @@ def diets_all(request):
             tmpL2.append(i[2])
             tmpL2.append(i[3])
             tmpL2.append(i[4])
-            q = c.execute("exec p_dieta_dane %s", [i[0]])
-            ds = q.fetchall()
+            c.callproc("p_dieta_dane", [i[0]])
+            c.execute("select * from tmpTable;")
+            ds = c.fetchall()
+            c.execute("drop table tmpTable;")
             if (ds):
                 for j in ds[0]:
                     tmpL2.append(j)
@@ -428,8 +473,8 @@ def diets_all(request):
         return render(request, 'OnlineDietetyk/diets_all.html', context)
     elif request.GET.get('search'):
         c = connection.cursor()
-        q = c.execute("select * from v_diety_top100_alf")
-        r1 = q.fetchall()
+        c.execute("select * from v_diety_top100_alf")
+        r1 = c.fetchall()
         tmpList = []
         for i in r1:
             tmpL2 = []
@@ -438,8 +483,10 @@ def diets_all(request):
             tmpL2.append(i[2])
             tmpL2.append(i[3])
             tmpL2.append(i[4])
-            q = c.execute("exec p_dieta_dane %s", [i[0]])
-            ds = q.fetchall()
+            c.callproc("p_dieta_dane", [i[0]])
+            c.execute("select * from tmpTable;")
+            ds = c.fetchall()
+            c.execute("drop table tmpTable;")
             if (ds):
                 for j in ds[0]:
                     tmpL2.append(j)
@@ -452,12 +499,14 @@ def diets_all(request):
 @login_required
 def diet(request, id):
     c = connection.cursor()
-    q = c.execute("exec p_dania_wg_diety %s", [id])
-    dm = q.fetchall()
-    q = c.execute("exec p_dieta_dane %s", [id])
-    ds = q.fetchall()
+    c.callproc("p_dania_wg_diety", [id])
+    dm = c.fetchall()
+    c.callproc("p_dieta_dane", [id])
+    c.execute("select * from tmpTable;")
+    ds = c.fetchall()
+    c.execute("drop table tmpTable;")
     context = {'dm': dm, 'ds': ds}
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_superuser:
         if (request.POST.get('add')):
             c.close()
             mealID = request.POST.getlist('tmpMeal')
@@ -480,8 +529,11 @@ def diet(request, id):
             c.close()
             c = connection.cursor()
             mealID = request.POST.get('idMeal')
-            c.execute("exec p_usun_danie_dieta %s, %s", [id, mealID])
+            c.callproc("p_usun_danie_dieta", [id, mealID])
         return redirect('diet', id=id)
+    elif request.method == 'POST' and not(request.user.is_superuser):
+        messages.error(request, "Demo version, changes has not been submitted.")
+        return render(request, 'OnlineDietetyk/diet.html', context)
     else:
         return render(request, 'OnlineDietetyk/diet.html', context)
 
@@ -489,7 +541,7 @@ def diet(request, id):
 def new_diet(request):
     type = TypDiety.objects.all()
     cat = {'types': type}
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_superuser:
         if (request.POST.get('name')):
             name = request.POST.get('name')
             kat = request.POST.get('kat')
@@ -505,10 +557,13 @@ def new_diet(request):
                 NowaDieta.data_dodania = datetime.today().strftime('%Y-%m-%d')
             NowaDieta.wersja = request.POST.get('version')
             NowaDieta.save()
-            nowa_dieta = c.execute("select top 1 id from Diety order by id desc")
-            id_nowej_diety = nowa_dieta.fetchone()[0]
+            c.execute("select id from Diety order by id desc limit 1")
+            id_nowej_diety = c.fetchone()[0]
             # return HttpResponseRedirect('/OnlineDietetyk/meal/%s/',id_nowego_dania)
             return redirect('diet', id=id_nowej_diety)
+    elif  request.method == 'POST' and not(request.user.is_superuser):
+        messages.error(request, "Demo version, changes has not been submitted.")
+        return render(request, 'OnlineDietetyk/new_diet.html', cat)
     else:
         return render(request, 'OnlineDietetyk/new_diet.html', cat)
 
@@ -518,12 +573,17 @@ def diet_meals(request):
     cat = {'categories': categories}
     if request.GET.get('nazwa') or request.GET.get('kat'):
         c = connection.cursor()
-        q = c.execute("exec p_szukaj_danie %s,%s", [request.GET.get('nazwa'), request.GET.get('kat')])
-        r1 = q.fetchall()
+        args = [request.GET.get('nazwa'), request.GET.get('kat')]
+        c.callproc("p_szukaj_danie", args)
+        c.execute("select * from tmpTable;")
+        r1 = c.fetchall()
+        c.execute("drop table tmpTable;")
         result = list()
         for i in r1:
-            q = c.execute("exec p_danie_dane %s", [i.ID])
-            r2 = q.fetchall()
+            c.callproc("p_danie_dane", [i.ID])
+            c.execute("select * from tmpTable;")
+            r2 = c.fetchall()
+            c.execute("drop table tmpTable;")
             result.append(list(i) + list(r2))
         context = {'result': result, 'categories': categories}
         return render(request, 'OnlineDietetyk/diet_meals.html', context)
@@ -537,23 +597,30 @@ def meals(request):
     cat = {'categories': categories}
     if request.GET.get('nazwa') or request.GET.get('kat'):
         c = connection.cursor()
-        q = c.execute("exec p_szukaj_danie %s,%s", [request.GET.get('nazwa'), request.GET.get('kat')])
-        r1 = q.fetchall()
+        args = [request.GET.get('nazwa'), request.GET.get('kat')]
+        c.callproc("p_szukaj_danie", args )
+        c.execute("select * from tmpTable;")
+        r1 = c.fetchall()
+        c.execute("drop table tmpTable;")
         result = list()
         for i in r1:
-            q = c.execute("exec p_danie_dane %s", [i.ID])
-            r2 = q.fetchall()
+            c.callproc("p_danie_dane", [i[0]])
+            c.execute("select * from tmpTable;")
+            r2 = c.fetchall()
+            c.execute("drop table tmpTable;")
             result.append(list(i)+list(r2))
         context = {'result': result, 'categories': categories}
         return render(request, 'OnlineDietetyk/meals.html', context)
     elif request.GET.get('search'):
         c = connection.cursor()
-        q = c.execute("select * from v_dania_top100_alf")
-        r1 = q.fetchall()
+        c.execute("select * from v_dania_top100_alf")
+        r1 = c.fetchall()
         result = list()
         for i in r1:
-            q = c.execute("exec p_danie_dane %s", [i[0]])
-            r2 = q.fetchall()
+            c.callproc("p_danie_dane", [i[0]])
+            c.execute("select * from tmpTable")
+            r2 = c.fetchall()
+            c.execute("drop table tmpTable")
             result.append(list(i) + list(r2))
         context = {'result': result, 'categories': categories}
         return render(request, 'OnlineDietetyk/meals.html', context)
@@ -563,12 +630,16 @@ def meals(request):
 @login_required
 def meal(request, id):
     c = connection.cursor()
-    q = c.execute("exec p_danie_dane %s", [id])
-    meal_stats = q.fetchall()
-    q1 = c.execute("exec p_danie_produkty %s", [id])
-    meal_prod = q1.fetchall()
+    c.callproc("p_danie_dane", [id])
+    c.execute("select * from tmpTable;")
+    meal_stats = c.fetchall()
+    c.execute("drop table tmpTable;")
+    c.callproc("p_danie_produkty", [id])
+    c.execute("select * from tmpTable;")
+    meal_prod = c.fetchall()
+    c.execute("drop table tmpTable;")
     context1 = {'meal_stats': meal_stats, 'meal_prod': meal_prod}
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_superuser:
         if (request.POST.get('add') and request.POST.get('tmpProd') ):
             c.close()
             productsID = request.POST.getlist('tmpProd')
@@ -581,14 +652,17 @@ def meal(request, id):
                 tmpList.append(new)
             DanieProdukt.objects.bulk_create(tmpList)
                 #c = connection.cursor()
-                #q = c.execute("exec p_dodaj_prod_do_dania %s,%s,%s", [id, i, 22])
+                #q = c.execute("call p_dodaj_prod_do_dania %s,%s,%s", [id, i, 22])
         #return render(request, 'OnlineDietetyk/meal.html', context1)
         if (request.POST.get('remove')):
             c.close()
             c = connection.cursor()
             productID = request.POST.get('idProd')
-            c.execute("exec p_usun_prod_danie %s, %s", [id, productID])
+            c.callproc("p_usun_prod_danie", [id, productID])
         return redirect('meal', id=id)
+    elif  request.method == 'POST' and not(request.user.is_superuser):
+        messages.error(request, "Demo version, changes has not been submitted.")
+        return render(request, 'OnlineDietetyk/meal.html', context1)
     else:
         return render(request, 'OnlineDietetyk/meal.html', context1)
 
@@ -597,7 +671,7 @@ def new_meal(request):
     c1 = KategorieDan.objects.all()
     kat = {'kat1': c1}
     c = connection.cursor()
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_superuser:
         if (request.POST.get('name') and request.POST.get('kat')):
             name = request.POST.get('name')
             kat = request.POST.get('kat')
@@ -606,10 +680,13 @@ def new_meal(request):
             q1 = KategorieDan.objects.get(id=kat)
             NoweDanie.kategoria_dania = q1
             NoweDanie.save()
-            nowe_danie = c.execute("select top 1 id from Danie order by id desc")
-            id_nowego_dania = nowe_danie.fetchone()[0]
+            c.execute("select id from Danie order by id desc limit 1")
+            id_nowego_dania = c.fetchone()[0]
             #return HttpResponseRedirect('/OnlineDietetyk/meal/%s/',id_nowego_dania)
             return redirect('meal', id=id_nowego_dania)
+    elif  request.method == 'POST' and not(request.user.is_superuser):
+        messages.error(request, "Demo version, changes has not been submitted.")
+        return render(request, 'OnlineDietetyk/new_meal.html', kat)
     else:
         return render(request, 'OnlineDietetyk/new_meal.html', kat)
 
@@ -621,9 +698,9 @@ def meal_products(request):
             'skladnik') or request.GET.get('ile'):
 
         c = connection.cursor()
-       # q = c.execute("exec p_szukaj_produkt %s,%s,%s,%s", [request.GET.get('nazwa'), request.GET.get('kat'), request.GET.get('kcal'), request.GET.get('skladnik')])
-        q = c.execute("exec p_szukaj_produkt %s,%s", [request.GET.get('nazwa'), request.GET.get('kat')])
-        result = q.fetchall()
+       # q = c.execute("call p_szukaj_produkt %s,%s,%s,%s", [request.GET.get('nazwa'), request.GET.get('kat'), request.GET.get('kcal'), request.GET.get('skladnik')])
+        c.callproc("p_szukaj_produkt", [request.GET.get('nazwa'), request.GET.get('kat')])
+        result = c.fetchall()
 
         context = {'result': result, 'categories' : categories}
         return render(request, 'OnlineDietetyk/meal_products.html', context)
@@ -634,18 +711,18 @@ def meal_products(request):
 @login_required
 def reports(request):
     c = connection.cursor()
-    q = c.execute('select * from v_wizyty_nadchodzace')
-    visits = q.fetchall()
-    q = c.execute('select * from v_pacjenci_statystyki')
-    patients = q.fetchall()
-    q = c.execute('select * from v_dania_top10_kcal')
-    top1 = q.fetchall()
-    q = c.execute('select * from v_dania_top10_bialko')
-    top2 = q.fetchall()
-    q = c.execute('select * from v_dania_top10_tluszcze')
-    top3 = q.fetchall()
-    q = c.execute('select * from v_dania_top10_weglowodany')
-    top4 = q.fetchall()
+    c.execute('select * from v_wizyty_nadchodzace')
+    visits = c.fetchall()
+    c.execute('select * from v_pacjenci_statystyki')
+    patients = c.fetchall()
+    c.execute('select * from v_dania_top10_kcal')
+    top1 = c.fetchall()
+    c.execute('select * from v_dania_top10_bialko')
+    top2 = c.fetchall()
+    c.execute('select * from v_dania_top10_tluszcze')
+    top3 = c.fetchall()
+    c.execute('select * from v_dania_top10_weglowodany')
+    top4 = c.fetchall()
     context = {
         'visits': visits,
         'patients': patients,
@@ -662,16 +739,19 @@ def openfoodapi(request):
     if request.GET.get('keyword'):
         keyword = request.GET.get('keyword')
         param = {"search_terms": keyword, "json": "true"}
-        respond = requests.get('https://pl.openfoodfacts.org/cgi/search.pl', params = param).json()
+        respond = requests.get('https://world.openfoodfacts.org/cgi/search.pl', params = param).json()
         context = {
         'results': respond["products"],
         'categories': categories
         }
         return render(request, 'OnlineDietetyk/openfoodapi.html', context)
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_superuser:
         if (request.POST.get('addFromAPI') and request.POST.get('kat')):
             #return HttpResponseRedirect('/OnlineDietetyk/meal/%s/',id_nowego_dania)
             return redirect('meal', id=1)
+    elif  request.method == 'POST' and not(request.user.is_superuser):
+        messages.error(request, "Demo version, changes has not been submitted.")
+        return render(request, 'OnlineDietetyk/openfoodapi.html')
     else:
         return render(request, 'OnlineDietetyk/openfoodapi.html')
 
