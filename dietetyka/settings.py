@@ -82,7 +82,7 @@ DATABASES = {
        'ENGINE': 'django.db.backends.mysql',
        'NAME': 'paplosk$dietetyka',
        'USER': 'paplosk',
-       'PASSWORD': 'wykijdajlo1',
+       'PASSWORD': '###',
        'HOST': 'paplosk.mysql.pythonanywhere-services.com',
 
    }
